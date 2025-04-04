@@ -165,16 +165,16 @@ export async function atualizarPerguntasRespondidas(dificuldade: Dificuldade, re
     }
 }
 
-export async function buscarPerguntas(dificuldade: Dificuldade): Promise<IPergunta[]> {
+export async function buscarPerguntaAleatoriaNaoRespondida(dificuldade: Dificuldade): Promise<IPergunta | null> {
     const conn = await connect();
     try {
-        const sql = "SELECT * FROM Perguntas WHERE dificuldade = ?";
-        const values = [dificuldade]
+        const sql = "SELECT * FROM Perguntas WHERE dificuldade = ? AND respondida = FALSE ORDER BY RAND() LIMIT 1";
+        const values = [dificuldade];
         const [rows] = await conn.query<IPergunta[] & mysql.RowDataPacket[]>(sql, values);
-    
-        return rows;
+        
+        return rows.length > 0 ? rows[0] : null;
     } catch (error) {
-        console.error("Erro ao buscar perguntas: ", error);
+        console.error("Erro ao buscar pergunta aleatória: ", error);
         throw error;
     } finally {
         conn.end();

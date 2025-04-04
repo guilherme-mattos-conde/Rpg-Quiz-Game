@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { inserirPersonagem, atualizarVidaPersonagem, excluirPersonagens, buscarPersonagem, buscarPersonagens, inserirPerguntas, atualizarPerguntaRespondida, atualizarPerguntasRespondidas, buscarPerguntas, excluirPerguntas } from "./services/db";
+import { inserirPersonagem, atualizarVidaPersonagem, excluirPersonagens, buscarPersonagem, buscarPersonagens, inserirPerguntas, atualizarPerguntaRespondida, atualizarPerguntasRespondidas, buscarPerguntaAleatoriaNaoRespondida, excluirPerguntas } from "./services/db";
 
 type Dificuldade = 'Fácil' | 'Médio' | 'Difícil';
 
@@ -24,8 +24,9 @@ app.post("/personagem", async (req, res) => {
 
 app.get("/personagem/:id", async (req, res) => {
     try {
-        const { id } = req.params;
-        const personagem = await buscarPersonagem(Number(id));
+        const id = Number(req.params.id);
+
+        const personagem = await buscarPersonagem(id);
 
         if (personagem != null) {
             res.json(personagem);
@@ -50,6 +51,7 @@ app.put("/personagem/:id/vida", async (req, res) => {
     try {
         const { id } = req.params;
         const { vida } = req.body;
+        
         const result = await atualizarVidaPersonagem(Number(id), vida);
 
         if (result) {
@@ -80,13 +82,13 @@ app.post("/perguntas", async (req, res) => {
     }
 });
 
-app.get("/perguntas/:dificuldade", async (req, res) => {
+app.get("/pergunta/:dificuldade", async (req, res) => {
     try {
-        const dificuldade = req.params as unknown as Dificuldade;
-        const perguntas = await buscarPerguntas(dificuldade);
+        const dificuldade = req.params.dificuldade as unknown as Dificuldade;
+        const perguntas = await buscarPerguntaAleatoriaNaoRespondida(dificuldade);
         res.json(perguntas);
     } catch (error) {
-        res.status(500).json({ error: "Erro ao atualizar pergunta" });
+        res.status(500).json({ error: "Erro ao buscar pergunta" });
     }
 });
 
@@ -117,7 +119,7 @@ app.put("/perguntas/:dificuldade", async (req, res) => {
     }
 });
 
-app.delete("/personagens", async (_req, res) => {
+app.delete("/perguntas", async (_req, res) => {
     try {
         const result = await excluirPerguntas();
         res.json({ message: `${result} perguntas excluídas` });
