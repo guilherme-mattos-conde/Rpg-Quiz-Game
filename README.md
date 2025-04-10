@@ -14,8 +14,8 @@ Um jogo de perguntas e respostas com temática RPG. Desenvolvido com Vue.js no f
 ### 1️⃣ Clonar o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/rpg-quiz-game.git
-cd rpg-quiz-game
+git clone https://github.com/guilherme-mattos-conde/Rpg-Quiz-Game.git
+cd Rpg-Quiz-Game
 ```
 ### 2️⃣ Instalar as dependências
 ```bash
